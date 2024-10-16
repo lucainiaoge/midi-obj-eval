@@ -7,7 +7,7 @@ from core import extract_pretty_midi_features_multiple
 from core import get_num_notes, get_used_pitch_multiple, get_pitch_class_histogram
 from core import get_pitch_class_transition_matrix
 from core import get_avg_ioi
-from single_midi_eval import evaluate_single_midi, plot_pitch_class_transition_matrix
+from single_midi_eval import evaluate_single_midi, plot_pitch_class_transition_matrix, plot_pitch_class_histogram
 
 def get_midi_files_from_dir(midi_dir):
     midi_filenames = []
@@ -78,9 +78,11 @@ if __name__ == '__main__':
     _, midi_dir_name = os.path.split(args.midi_dir)
     out_json_filename = midi_dir_name + '_total_metrics.json'
     out_pctm_filename = midi_dir_name + '_total_pctm.pdf'
+    out_pitch_hist_filename = midi_dir_name + '_pitch_hist.pdf'
 
     out_json_filepath = os.path.join(args.out_dir, out_json_filename)
     out_pctm_filepath = os.path.join(args.out_dir, out_pctm_filename)
+    out_pitch_hist_filepath = os.path.join(args.out_dir, out_pitch_hist_filename)
 
     with open(out_json_filepath, "w") as outfile:
         json.dump(metrics, outfile)
@@ -88,5 +90,9 @@ if __name__ == '__main__':
     plot_pitch_class_transition_matrix(
         metrics["pitch_class_transition_matrix"],
         out_pctm_filepath
+    )
+    plot_pitch_class_histogram(
+        metrics["pitch_class_histogram"],
+        out_pitch_hist_filepath
     )
     print("Saved total metrics to {}".format(args.out_dir))

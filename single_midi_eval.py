@@ -30,6 +30,12 @@ def evaluate_single_midi(midi_filepath, return_numpy = False):
             metrics[key] = metrics[key].tolist()
     return metrics
 
+def plot_pitch_class_histogram(pitch_class_histogram, save_path):
+    fig, ax = plt.subplots(1)
+    ax.bar(PITCH_CLASSES, height=pitch_class_histogram)
+    fig.savefig(save_path)
+    plt.close(fig)
+
 def plot_pitch_class_transition_matrix(pitch_class_transition_matrix, save_path):
     fig, ax = plt.subplots(1)
     ax.set_xticks(np.arange(len(PITCH_CLASSES)), labels=PITCH_CLASSES)
@@ -60,9 +66,11 @@ if __name__ == '__main__':
 
     out_json_filename = midi_name + '_metrics.json'
     out_pctm_filename = midi_name + '_pctm.pdf'
+    out_pitch_hist_filename = midi_name + '_pitch_hist.pdf'
 
     out_json_filepath = os.path.join(args.out_dir, out_json_filename)
     out_pctm_filepath = os.path.join(args.out_dir, out_pctm_filename)
+    out_pitch_hist_filepath = os.path.join(args.out_dir, out_pitch_hist_filename)
 
     with open(out_json_filepath, "w") as outfile:
         json.dump(metrics, outfile)
@@ -70,5 +78,9 @@ if __name__ == '__main__':
     plot_pitch_class_transition_matrix(
         metrics["pitch_class_transition_matrix"],
         out_pctm_filepath
+    )
+    plot_pitch_class_histogram(
+        metrics["pitch_class_histogram"],
+        out_pitch_hist_filepath
     )
     print("Saved metrics to {}".format(args.out_dir))
